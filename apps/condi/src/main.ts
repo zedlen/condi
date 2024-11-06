@@ -5,6 +5,7 @@ import { Logger } from 'nestjs-pino';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { HttpExceptionFilter } from '@condi/application/filters/httpException.filters';
 import { ValidationPipe } from '@nestjs/common';
+import { clerkMiddleware } from '@clerk/express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,6 +13,7 @@ async function bootstrap() {
   const logger = app.get(Logger);
   app.setGlobalPrefix('api');
   app.useLogger(logger);
+  app.use(clerkMiddleware());
   app.useGlobalFilters(new HttpExceptionFilter(configService));
   app.useGlobalPipes(
     new ValidationPipe({

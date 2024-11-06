@@ -35,12 +35,15 @@ export class UsersController {
     type: InviteUserRequestDTO,
     description: 'Json structure for user object',
   })
-  inviteUser(@Body() userData: InviteUserRequestDTO, @Headers() headers: any) {
+  async inviteUser(
+    @Body() userData: InviteUserRequestDTO,
+    @Headers() headers: any,
+  ) {
     const requestId = headers['request-id'];
-    this.userClient.emit(EVENTS.USER_INVITE_CLERK, {
-      data: userData,
+    await this.userClient.emit(EVENTS.USER_INVITE_CLERK, {
+      ...userData,
       requestId,
     });
-    return userData;
+    return {};
   }
 }

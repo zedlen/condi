@@ -25,7 +25,7 @@
         "./apps/condi/src/*"
       ],
       "@shared/*": [
-        "./apps/shared/src/*"
+        "libs/shared/src/*"
       ],
       "@utils": [
         "libs/utils/src"

@@ -29,21 +29,12 @@
       }
     },
     "shared": {
-      "type": "application",
-      "root": "apps/shared",
-      "entryFile": "main",
-      "sourceRoot": "apps/shared/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/shared/tsconfig.app.json"
-      }
-    },
-    "utils": {
       "type": "library",
-      "root": "libs/utils",
-      "entryFile": "index",
-      "sourceRoot": "libs/utils/src",
+      "root": "libs/shared",
+      "entryFile": "main",
+      "sourceRoot": "libs/shared/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/utils/tsconfig.lib.json"
+        "tsConfigPath": "libs/shared/tsconfig.app.json"
       }
     }
   }
