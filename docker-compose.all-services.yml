@@ -13,7 +13,6 @@ services:
       - .env.docker
     volumes:
       - ./apps/condi:/app/apps/condi
-      - ./libs/shared:/app/libs/shared
       - ./libs:/app/libs
       - ./.env.docker:/app/.env.docker
     depends_on:
@@ -30,7 +29,6 @@ services:
       - .env.docker
     volumes:
       - ./apps/users:/app/apps/users
-      - ./libs/shared:/app/libs/shared
       - ./libs:/app/libs
       - ./.env.docker:/app/.env.docker
     depends_on:
