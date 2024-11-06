@@ -1,0 +1,46 @@
+version: '3'
+services:
+  condi:
+    build:
+      args:
+        - APP_NAME=condi
+      dockerfile: Dockerfile
+    command: npm run start:dev:condi
+    volumes:
+      - ./apps/condi:/app/apps/condi
+      - ./apps/shared:/app/apps/shared
+      - ./apps/libs:/app/apps/libs
+      - ./.env.local:/app/.env.local
+    env_file:
+      - .env.local
+    ports:
+      - "3000:3000"
+    depends_on:
+      - users
+      - rabbitmq
+    environment:
+      RABBITMQ_URL: amqp://rabbitmq
+
+  users:
+    build:
+      args:
+        - APP_NAME=users
+      dockerfile: Dockerfile
+    command: npm run start:dev:users
+    volumes:
+      - ./apps/users:/app/apps/users
+      - ./apps/shared:/app/apps/shared
+      - ./apps/libs:/app/apps/libs
+      - ./.env.local:/app/.env.local
+    env_file:
+      - .env.local
+    environment:
+      RABBITMQ_URL: amqp://rabbitmq
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3
+    ports:
+      - "5672:5672"
+      - "15672:15672"
