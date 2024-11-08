@@ -1,0 +1,20 @@
+sequenceDiagram
+  actor UserMaster as User Master/Padawan
+  participant Condi as Condi
+  participant UserService as UserService
+  participant AuthenticationService as AuthenticationService
+
+
+  UserMaster ->>+ Condi: Invite admin user
+  Note right of UserMaster: When master creates(invites) an admin user <br/> it will be without condominiums nor resideces asigned <br/> after accepting invitation admin user will be able to create <br/> new condomiums (tenant on permision service) <br/> and invite users to that condominium
+  Condi -->>+ UserMaster: Invitation request created
+  break bad request from user
+    Condi -->> UserMaster: Invalid/Bad request
+  end
+  Condi -->> UserService: create invitation
+  Note over Condi, UserService: This is an async request <br/> using a message broker
+  UserService ->> AuthenticationService: create invitaion
+  AuthenticationService -->> UserService: Invitation created
+  break when invitation was<br/>already send
+    AuthenticationService -->> UserService: Invitation already sended
+  end

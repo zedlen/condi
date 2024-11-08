@@ -1,0 +1,20 @@
+sequenceDiagram
+  actor UserAdmin as User Admin
+  participant Condi as Condi
+  participant UserService as UserService
+  participant AuthenticationService as AuthenticationService
+
+
+  UserAdmin ->>+ Condi: Invite admin user
+  Note right of UserAdmin: When Admin invites an user(guard/resident/owner/co-owner) <br/> it will be without atleast one condominium and one residece asigned <br/> after accepting invitation user will be able to see the scope he was invited for
+  Condi -->>+ UserAdmin: Invitation request created
+  break bad request from user
+    Condi -->> UserAdmin: Invalid/Bad request
+  end
+  Condi -->> UserService: create invitation
+  Note over Condi, UserService: This is an async request <br/> using a message broker
+  UserService ->> AuthenticationService: create invitaion
+  AuthenticationService -->> UserService: Invitation created
+  break when invitation was<br/>already send
+    AuthenticationService -->> UserService: Invitation already sended
+  end
