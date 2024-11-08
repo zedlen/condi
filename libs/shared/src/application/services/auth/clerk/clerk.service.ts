@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ClerkClient, createClerkClient } from '@clerk/express';
+import { ClerkClient, createClerkClient, User } from '@clerk/express';
 import { ConfigService } from '@nestjs/config';
 import { InviteUserRequestDTO } from '@shared/infrastructure/dtos/invite.users.dto';
 import { AuthService } from '@shared/domain/interfaces/auth.service.interface';
@@ -31,5 +31,9 @@ export class ClerkService implements AuthService {
     } catch (error) {
       this.logger.error({ error, data });
     }
+  }
+
+  getUser(userId: string): Promise<User> {
+    return this.clerkClient.users.getUser(userId);
   }
 }

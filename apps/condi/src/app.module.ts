@@ -7,9 +7,12 @@ import { CLIENTS } from '@shared/infrastructure/constants/rabbitmq';
 import { UsersController } from '@condi/infrastructure/controllers/v1/users/users.controller';
 import { LoggerMiddleware } from '@condi/application/middlewares/logger.middleware';
 import { LoggerModule } from 'nestjs-pino';
+import { pinoLoggerConfig } from '@shared/infrastructure/constants/pinoLogger';
+import { SharedModule } from '@shared/shared.module';
 
 @Module({
   imports: [
+    SharedModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.local', '.env.development', '.env.production'],
@@ -27,7 +30,7 @@ import { LoggerModule } from 'nestjs-pino';
         },
       },
     ]),
-    LoggerModule.forRoot(),
+    LoggerModule.forRoot(pinoLoggerConfig),
   ],
   controllers: [AppController, WebhooksController, UsersController],
   providers: [],

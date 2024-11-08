@@ -1,9 +1,18 @@
-import { Controller, Post, Body, Inject, Headers } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Inject,
+  Headers,
+  UseGuards,
+  Get,
+  Param,
+} from '@nestjs/common';
 import { CLIENTS, EVENTS } from '@shared/infrastructure/constants/rabbitmq';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiResponse, ApiBody } from '@nestjs/swagger';
 import { InviteUserRequestDTO } from '@shared/infrastructure/dtos/invite.users.dto';
-
+import { AuthGuard } from '@condi/application/interceptors/auth.interceptor';
 @Controller('users')
 export class UsersController {
   constructor(@Inject(CLIENTS.USERS) private userClient: ClientProxy) {}
@@ -35,6 +44,7 @@ export class UsersController {
     type: InviteUserRequestDTO,
     description: 'Json structure for user object',
   })
+  @UseGuards(AuthGuard)
   async inviteUser(
     @Body() userData: InviteUserRequestDTO,
     @Headers() headers: any,
@@ -44,6 +54,14 @@ export class UsersController {
       ...userData,
       requestId,
     });
+    return {};
+  }
+
+  @Get(':id')
+  @UseGuards(AuthGuard)
+  async getUser(@Param('id') user_id: string, @Headers() headers: any) {
+    const requestId = headers['request-id'];
+    console.log(user_id, requestId);
     return {};
   }
 }

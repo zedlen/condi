@@ -4,6 +4,7 @@ import { UsersService } from '@users/application/services/users.service';
 import { ConfigModule } from '@nestjs/config';
 import { SharedModule } from '@shared/shared.module';
 import { LoggerModule } from 'nestjs-pino';
+import { pinoLoggerConfig } from '@shared/infrastructure/constants/pinoLogger';
 
 @Module({
   imports: [
@@ -11,7 +12,7 @@ import { LoggerModule } from 'nestjs-pino';
       envFilePath: ['.env.local', '.env.development', '.env.production'],
     }),
     SharedModule,
-    LoggerModule.forRoot(),
+    LoggerModule.forRoot(pinoLoggerConfig),
   ],
   controllers: [UsersController],
   providers: [UsersService],
