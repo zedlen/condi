@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ClerkClient, createClerkClient, User } from '@clerk/express';
+import { ClerkClient, createClerkClient, getAuth, User } from '@clerk/express';
 import { ConfigService } from '@nestjs/config';
 import { InviteUserRequestDTO } from '@shared/infrastructure/dtos/invite.users.dto';
 import { AuthService } from '@shared/domain/interfaces/auth.service.interface';
-
+import { Request } from 'express';
 @Injectable()
 export class ClerkService implements AuthService {
   private readonly logger = new Logger(ClerkService.name);
@@ -35,5 +35,13 @@ export class ClerkService implements AuthService {
 
   getUser(userId: string): Promise<User> {
     return this.clerkClient.users.getUser(userId);
+  }
+
+  async isAuthenticated(
+    req: Request,
+  ): Promise<{ isAuthenticated: boolean; userId: string }> {
+    const auth = getAuth(req);
+    if (!auth.userId) return { isAuthenticated: false, userId: '' };
+    return { isAuthenticated: true, userId: auth.userId };
   }
 }
