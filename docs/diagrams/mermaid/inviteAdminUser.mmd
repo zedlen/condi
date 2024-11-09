@@ -11,7 +11,7 @@ sequenceDiagram
   break bad request from user
     Condi -->> UserMaster: Invalid/Bad request
   end
-  Condi -->> UserService: create invitation
+  Condi -->> UserService: create admin invitation
   Note over Condi, UserService: This is an async request <br/> using a message broker
   UserService ->> AuthenticationService: create invitaion
   AuthenticationService -->> UserService: Invitation created
