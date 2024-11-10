@@ -1,4 +1,4 @@
-# Creating a new user
+# Inviting a new user
 
 To create a new user it has to options.
 
