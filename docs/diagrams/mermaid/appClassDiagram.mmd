@@ -1,0 +1,124 @@
+classDiagram
+    class User
+    User : +String id
+    User : +String name
+    User : +String lastName
+    User : +String externalId
+    User : +String status
+    User : +Timestamp createdAt
+    User : +String createdBy
+    User : +Timestamp lastUpdatedAt
+    User : +String lastUpdatedBy
+    User : +updata(Partial~User~)
+    User : +create(User)
+    User : +deactivate(User)
+
+    class Address
+    Address : +String id
+    Address : +String typeId
+    Address : +String addressLine1
+    Address : +String addressLine2
+    Address : +String zipcode
+    Address : +String city
+    Address : +String state
+    Address : +String country
+    Address : +String status
+    Address : +Timestamp createdAt
+    Address : +String createdBy
+    Address : +Timestamp lastUpdatedAt
+    Address : +String lastUpdatedBy
+    Address : +updata(Partial~Address~)
+    Address : +create(Address)
+    Address : +deactivate(Address)
+
+    class Condominium
+    Condominium : +String id
+    Condominium : +String typeId
+    Condominium : +String name
+    Condominium : +String status
+    Condominium : +Address address
+    Condominium : +Number totalResidences
+    Condominium : +Timestamp createdAt
+    Condominium : +String createdBy
+    Condominium : +Timestamp lastUpdatedAt
+    Condominium : +String lastUpdatedBy
+    Condominium : +updata(Partial~Condominium~)
+    Condominium : +create(Condominium)
+    Condominium : +deactivate(Condominium)
+
+    Condominium "1" --> "1" Address
+    User "*" --> "*" Condominium
+
+    class Document
+    Document : +String id
+    Document : +String url
+    Document : +String type
+    Document : +String status
+    Document : +Timestamp createdAt
+    Document : +String createdBy
+    Document : +Timestamp lastUpdatedAt
+    Document : +String lastUpdatedBy
+
+    class CondominiumExpenseAndIncome
+    CondominiumExpenseAndIncome : +String id
+    CondominiumExpenseAndIncome : +String typeId
+    CondominiumExpenseAndIncome : +String description
+    CondominiumExpenseAndIncome : +String status
+    CondominiumExpenseAndIncome : +Number quantity
+    CondominiumExpenseAndIncome : +String reason
+    CondominiumExpenseAndIncome : +String issuerId
+    CondominiumExpenseAndIncome : +List~Document~ documents
+    CondominiumExpenseAndIncome : +String status
+    CondominiumExpenseAndIncome : +Timestamp createdAt
+    CondominiumExpenseAndIncome : +String createdBy
+    CondominiumExpenseAndIncome : +Timestamp lastUpdatedAt
+    CondominiumExpenseAndIncome : +String lastUpdatedBy
+    CondominiumExpenseAndIncome : +updata(Partial~CondominiumExpenseAndIncome~)
+    CondominiumExpenseAndIncome : +create(CondominiumExpenseAndIncome)
+    CondominiumExpenseAndIncome : +approve(CondominiumExpenseAndIncome)
+    CondominiumExpenseAndIncome : +reject(CondominiumExpenseAndIncome)
+
+    Condominium "1" --> "*" CondominiumExpenseAndIncome
+    CondominiumExpenseAndIncome "1" --> "*" Document
+
+    class Residence
+    Residence : +String id
+    Residence : +User owner
+    Residence : +User co_owner
+    Residence : +Condominium Condominium
+    Residence : +String customIdentifier
+    Residence : +String status
+    Residence : +Timestamp createdAt
+    Residence : +String createdBy
+    Residence : +Timestamp lastUpdatedAt
+    Residence : +String lastUpdatedBy
+    Residence : +updata(Partial~User~)
+    Residence : +create(User)
+    Residence : +deactivate(User)
+
+    Condominium "1" --> "*" Residence
+    Residence "1" --> "2" User
+
+    class Visitor
+    Visitor : +String id
+    Visitor : +User issuerId
+    Visitor : +Condominium Condominium
+    Visitor : +String name
+    Visitor : +String lastName
+    Visitor : +String email
+    Visitor : +String phone
+    Visitor : +Document visitCode
+    Visitor : +Number requiredParkingSpots
+    Visitor : +Number approvedParkingSpots
+    Visitor : +Timestamp date
+    Visitor : +String status
+    Visitor : +Timestamp createdAt
+    Visitor : +String createdBy
+    Visitor : +Timestamp lastUpdatedAt
+    Visitor : +String lastUpdatedBy
+    Visitor : +updata(Partial~User~)
+    Visitor : +create(User)
+    Visitor : +approve(User)
+    Visitor : +reject(User)
+
+    User "1" --> "*" Visitor

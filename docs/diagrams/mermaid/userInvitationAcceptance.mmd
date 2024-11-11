@@ -1,0 +1,17 @@
+sequenceDiagram
+  actor User as User
+  participant AS as Authentication Service
+  participant Condi as Condi
+  participant US as Users Service
+  participant PS as Permission Service
+
+  AS-->>User: Send invitation mail
+  User->>AS: Sign up in platform
+
+  AS-->>User: Succesfull register <br/> redirect to condi
+
+  AS-->>Condi: Webhook: new user created
+  Condi-->>+US: New user event
+  US->>PS: Create user with<br/> specified role and tenant in meta data
+  PS->>US: User created correctly
+  US->US: Create new user on DB
