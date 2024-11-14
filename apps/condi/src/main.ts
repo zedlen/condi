@@ -27,13 +27,22 @@ async function bootstrap() {
     .setTitle('Condi')
     .setDescription('WIP: API to connect to Condi services')
     .setVersion('1.0')
-    .addServer('http://localhost:3000/', 'Local environment')
-    // .addServer('https://staging.condi.mx/', 'Staging') not avialable yet
-    // .addServer('https://production.condi.mx/', 'Production') not avialable yet
+    .addServer(`http://localhost:${gatewayPort}/`, 'Local environment')
+    .addServer('https://dev.condi.mx/', 'Development **not avialable yet**')
+    .addServer('https://staging.condi.mx/', 'Staging **not avialable yet**')
+    .addServer('https://condi.mx/', 'Production **not avialable yet**')
     .addTag('Condi')
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api/docs', app, document);
+
+  // set cors
+  const alloweOrigins = configService.get('ALLOWED_ORIGINS');
+  const allowedMethods = configService.get('ALLOWED_METHODS');
+  app.enableCors({
+    origin: JSON.parse(alloweOrigins),
+    methods: allowedMethods,
+  });
 
   await app.listen(gatewayPort);
 }
