@@ -121,9 +121,17 @@ classDiagram
     Document : +create(Document)
     Document : +deactivate(Document)
 
+    class MovementType
+    MovementType: String id
+    MovementType: String name
+    MovementType: String description
+    MovementType: boolean hideIssuer
+    MovementType: boolean hideCreator
+    MovementType: boolean hideDescription
+
     class CondominiumExpenseAndIncome
     CondominiumExpenseAndIncome : +String id
-    CondominiumExpenseAndIncome : +String typeId
+    CondominiumExpenseAndIncome : +MovementType type
     CondominiumExpenseAndIncome : +String description
     CondominiumExpenseAndIncome : +String status
     CondominiumExpenseAndIncome : +Number quantity
@@ -142,6 +150,7 @@ classDiagram
 
     Condominium "1" --> "*" CondominiumExpenseAndIncome
     CondominiumExpenseAndIncome "1" --> "*" Document
+    CondominiumExpenseAndIncome "1" --> "1" MovementType
 
     class Residence
     Residence : +String id
