@@ -76,6 +76,7 @@ classDiagram
 
     class Condominium
     Condominium : +String id
+    Condominium : +String externalId
     Condominium : +String typeId
     Condominium : +String name
     Condominium : +String status
@@ -138,6 +139,7 @@ classDiagram
     CondominiumExpenseAndIncome : +String reason
     CondominiumExpenseAndIncome : +String issuerId
     CondominiumExpenseAndIncome : +List~Document~ documents
+    CondominiumExpenseAndIncome : String dueDate
     CondominiumExpenseAndIncome : +String status
     CondominiumExpenseAndIncome : +Timestamp createdAt
     CondominiumExpenseAndIncome : +String createdBy
