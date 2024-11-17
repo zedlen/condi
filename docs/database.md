@@ -102,21 +102,22 @@ classDiagram
 
     Condominium "1" --> "1" Address
     
-    class UserCondiminium
-    UserCondiminium : +User user
-    UserCondiminium : +Condominium condominium
-    UserCondiminium : +UserRole roleOverride
-    UserCondiminium : +String status
-    UserCondiminium : +Timestamp createdAt
-    UserCondiminium : +String createdBy
-    UserCondiminium : +Timestamp lastUpdatedAt
-    UserCondiminium : +String lastUpdatedBy
-    UserCondiminium : +updata(Partial~UserCondiminium~)
-    UserCondiminium : +create(UserCondiminium)
-    UserCondiminium : +deactivate(UserCondiminium)
+     class UserCondominium
+    UserCondominium : +User user
+    UserCondominium : +Condominium condominium
+    UserCondominium : +String assignedRole
+    UserCondominium : +UserRole roleOverride
+    UserCondominium : +String status
+    UserCondominium : +Timestamp createdAt
+    UserCondominium : +String createdBy
+    UserCondominium : +Timestamp lastUpdatedAt
+    UserCondominium : +String lastUpdatedBy
+    UserCondominium : +updata(Partial~UserCondominium~)
+    UserCondominium : +create(UserCondominium)
+    UserCondominium : +deactivate(UserCondominium)
 
-    User "*" --> "1" UserCondiminium
-    Condominium "*" --> "1" UserCondiminium
+    User "*" --> "1" UserCondominium
+    Condominium "*" --> "1" UserCondominium
 
     class Document
     Document : +String id
