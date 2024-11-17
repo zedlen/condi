@@ -101,8 +101,24 @@ classDiagram
     Condominium : +deactivate(Condominium)
 
     Condominium "1" --> "1" Address
-    
-     class UserCondominium
+
+    class CondominiumFeed 
+    CondominiumFeed : +String id
+    CondominiumFeed : +String title
+    CondominiumFeed : +String content
+    CondominiumFeed : +Condominium condominium
+    CondominiumFeed : +String status
+    CondominiumFeed : +Timestamp createdAt
+    CondominiumFeed : +String createdBy
+    CondominiumFeed : +Timestamp lastUpdatedAt
+    CondominiumFeed : +String lastUpdatedBy
+    CondominiumFeed : +updata(Partial~CondominiumFeed~)
+    CondominiumFeed : +create(CondominiumFeed)
+    CondominiumFeed : +deactivate(CondominiumFeed)
+
+    CondominiumFeed "*" --> "1" Condominium
+
+    class UserCondominium
     UserCondominium : +User user
     UserCondominium : +Condominium condominium
     UserCondominium : +String assignedRole
