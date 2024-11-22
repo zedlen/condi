@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { ClerkClient, createClerkClient, getAuth, User } from '@clerk/express';
 import { ConfigService } from '@nestjs/config';
 import { InviteUserRequestDTO } from '@shared/infrastructure/dtos/invite.users.dto';
@@ -30,6 +30,14 @@ export class ClerkService implements AuthService {
       });
     } catch (error) {
       this.logger.error({ error, data });
+      if (error?.clerkError)
+        throw new HttpException(
+          {
+            error: error?.errors?.[0]?.code,
+            message: error?.errors?.[0]?.message,
+          },
+          error?.status || 500,
+        );
     }
   }
 

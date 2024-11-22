@@ -5,6 +5,9 @@ import { ClerkService } from '@shared/application/services/auth/clerk/clerk.serv
 import { AuthService } from '@shared/domain/interfaces/auth.service.interface';
 import { PermissionService } from '@shared/domain/interfaces/permission.service.interface';
 import { PermitService } from '@shared/application/services/permision/permit/permit.service';
+import { ExcelService } from '@shared/domain/interfaces/file/file.excel.service.interface';
+import { XlsxService } from '@shared/application/services/file/excel/xlsx';
+//import { ExcelJSService } from '@shared/application/services/file/excel/exceljs';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -22,7 +25,11 @@ import { PermitService } from '@shared/application/services/permision/permit/per
       provide: PermissionService,
       useClass: PermitService,
     },
+    {
+      provide: ExcelService,
+      useClass: XlsxService,
+    },
   ],
-  exports: [AuthService, PermissionService],
+  exports: [AuthService, PermissionService, ExcelService],
 })
 export class SharedModule {}

@@ -1,4 +1,4 @@
-import { User } from '@users/domain/entities/User.entity';
+import { UserEntity } from '@shared/domain/entities/User.entity';
 
 export abstract class PermissionService {
   abstract checkPermission(
@@ -6,5 +6,7 @@ export abstract class PermissionService {
     action: string,
     resource: string,
   ): Promise<boolean>;
-  abstract createUser(user: User): Promise<boolean>;
+  abstract createUser(user: UserEntity): Promise<boolean>;
+  abstract validateTenantExists(tenant: string): Promise<boolean>;
+  abstract validateRoleExists(role: string): Promise<boolean>;
 }

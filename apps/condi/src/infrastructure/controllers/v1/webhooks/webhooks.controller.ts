@@ -7,14 +7,14 @@ import {
   Headers,
   Inject,
   BadRequestException,
+  VERSION_NEUTRAL,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ClientProxy } from '@nestjs/microservices';
 import { Webhook } from 'svix';
 import { CLIENTS, EVENTS } from '@shared/infrastructure/constants/rabbitmq';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
-
-@Controller('webhooks')
+@Controller({ version: ['1', VERSION_NEUTRAL], path: 'webhooks' })
 export class WebhooksController {
   private WEBHOOK_SECRET: string;
   constructor(

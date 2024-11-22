@@ -13,7 +13,9 @@ export class AuthGuard implements CanActivate {
     const { isAuthenticated, userId } =
       await this.authService.isAuthenticated(request);
     if (!isAuthenticated) return false;
-    const resource = request.route.path.replace('/api/', '');
+    const resource = request.route.path
+      .replace('/api/', '') //remove api prefix
+      .replace(/v[0-9]*\//, ''); //remove api versioning
     return await this.permisionService.checkPermission(
       userId,
       request.method,

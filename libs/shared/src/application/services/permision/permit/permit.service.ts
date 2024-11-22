@@ -1,14 +1,15 @@
-import { Action } from '@condi/domain/enums/action.enum';
-import { Resource } from '@condi/domain/enums/resource.enum';
-import { Injectable } from '@nestjs/common';
+import { Action } from '@shared/domain/enums/action.enum';
+import { Resource } from '@shared/domain/enums/resource.enum';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PermissionService } from '@shared/domain/interfaces/permission.service.interface';
-import { User } from '@users/domain/entities/User.entity';
+import { UserEntity } from '@shared/domain/entities/User.entity';
 import { Permit } from 'permitio';
 
 @Injectable()
 export class PermitService implements PermissionService {
   private permit: Permit;
+  private readonly logger = new Logger(PermissionService.name);
   constructor(private readonly configService: ConfigService) {
     const permitToken = this.configService.get('PERMIT_TOKEN');
     this.permit = new Permit({
@@ -29,24 +30,50 @@ export class PermitService implements PermissionService {
     return this.permit.check(userId, actualAction, actualResource);
   }
 
-  async createUser(user: User): Promise<boolean> {
+  async createUser(user: UserEntity): Promise<boolean> {
     const userPrimitives = user.toPrimitives();
-    const userCreated = this.permit.api.createUser({
-      key: userPrimitives.externalId,
-      email: userPrimitives.status,
-      first_name: userPrimitives.name,
-      last_name: userPrimitives.lastName,
-      role_assignments: [
-        {
-          role: '',
-          tenant: '',
+    try {
+      const userCreated = this.permit.api.createUser({
+        key: userPrimitives.externalId,
+        email: userPrimitives.email,
+        first_name: userPrimitives.name,
+        last_name: userPrimitives.lastName,
+        role_assignments: [
+          ...userPrimitives?.roles
+            ?.map?.((role) =>
+              userPrimitives?.condominiumsIds?.map?.((condominiumId) => ({
+                role,
+                tenant: condominiumId as string,
+              })),
+            )
+            .flat(),
+        ],
+        attributes: {
+          condominiums: userPrimitives.condominiumsIds,
         },
-      ],
-      attributes: {
-        condominiums: userPrimitives.condominiumsIds,
-      },
-    });
-    console.log(userCreated);
-    return true;
+      });
+      this.logger.log(userCreated);
+      return true;
+    } catch (error) {
+      this.logger.error(error);
+      return false;
+    }
+  }
+
+  async validateTenantExists(tenantId: string): Promise<boolean> {
+    try {
+      const tenant = await this.permit.api.getTenant(tenantId);
+      return !!tenant;
+    } catch (error) {
+      return false;
+    }
+  }
+  async validateRoleExists(roleId: string): Promise<boolean> {
+    try {
+      const role = await this.permit.api.getRole(roleId);
+      return !!role;
+    } catch (error) {
+      return false;
+    }
   }
 }

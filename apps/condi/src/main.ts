@@ -14,7 +14,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.useLogger(logger);
   app.use(clerkMiddleware());
-  app.useGlobalFilters(new HttpExceptionFilter(configService));
+  app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -37,12 +37,14 @@ async function bootstrap() {
   SwaggerModule.setup('api/docs', app, document);
 
   // set cors
-  const alloweOrigins = configService.get('ALLOWED_ORIGINS');
-  const allowedMethods = configService.get('ALLOWED_METHODS');
+  const alloweOrigins = configService.get('ALLOWED_ORIGINS') || '';
+  const allowedMethods = configService.get('ALLOWED_METHODS') || '';
   app.enableCors({
     origin: JSON.parse(alloweOrigins),
     methods: allowedMethods,
   });
+
+  app.enableVersioning();
 
   await app.listen(gatewayPort);
 }

@@ -1,6 +1,13 @@
 import { Controller } from '@nestjs/common';
-import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
+import {
+  Ctx,
+  EventPattern,
+  Payload,
+  RmqContext,
+  MessagePattern,
+} from '@nestjs/microservices';
 import { EVENTS } from '@shared/infrastructure/constants/rabbitmq';
+import { BulkCreateUserRequestDTO } from '@shared/infrastructure/dtos/bulk.create.users.dto';
 import { ClerkWebhookDto } from '@shared/infrastructure/dtos/clerk.webhook.dto';
 import { InviteUserRequestDTO } from '@shared/infrastructure/dtos/invite.users.dto';
 import { UsersService } from '@users/application/services/users.service';
@@ -17,11 +24,32 @@ export class UsersController {
     channel.ack(originalMsg);
   }
 
-  @EventPattern(EVENTS.USER_INVITE_CLERK)
-  inviteUser(@Payload() data: InviteUserRequestDTO, @Ctx() ctx: RmqContext) {
+  @MessagePattern(EVENTS.USER_INVITE_CLERK)
+  async inviteUser(
+    @Payload() data: InviteUserRequestDTO,
+    @Ctx() ctx: RmqContext,
+  ) {
     const channel = ctx.getChannelRef();
     const originalMsg = ctx.getMessage();
-    this.usersService.inviteUser(data);
+    try {
+      await this.usersService.inviteUser(data);
+
+      return {};
+    } catch (err) {
+      return err;
+    } finally {
+      channel.ack(originalMsg);
+    }
+  }
+
+  @EventPattern(EVENTS.USER_CREATE_BULK)
+  bulkCreateUser(
+    @Payload() data: BulkCreateUserRequestDTO,
+    @Ctx() ctx: RmqContext,
+  ) {
+    const channel = ctx.getChannelRef();
+    const originalMsg = ctx.getMessage();
+    this.usersService.bulkCreateUsers(data);
     channel.ack(originalMsg);
   }
 }

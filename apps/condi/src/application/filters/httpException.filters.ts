@@ -5,15 +5,13 @@ import {
   HttpException,
   Logger,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   private logger = new Logger('HTTP');
-  constructor(private configService: ConfigService) {}
+  constructor() {}
   catch(exception: HttpException, host: ArgumentsHost) {
-    const isProd = this.configService.get('NODE_ENV') == 'production';
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
@@ -21,12 +19,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const exceptionResponse = exception.getResponse();
     const { stack, cause, name, message: exceptionMessage } = exception;
     const message = exceptionResponse?.['message'] || exceptionMessage;
+    const error =
+      exceptionResponse?.['response']?.['error'] || exceptionMessage;
     const { body, params } = request;
     this.logger.error({
       statusCode: status,
       timestamp: new Date().toISOString(),
+      error,
       message,
-      ...(!isProd && { stack }),
+      stack,
       body,
       params,
       cause,
@@ -35,8 +36,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
     response.status(status).json({
       statusCode: status,
       timestamp: new Date().toISOString(),
+      error,
       message,
-      ...(!isProd && { stack }),
       cause,
       name,
     });
