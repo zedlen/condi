@@ -42,14 +42,14 @@ export class UsersController {
     }
   }
 
-  @EventPattern(EVENTS.USER_CREATE_BULK)
+  @MessagePattern(EVENTS.USER_CREATE_BULK)
   bulkCreateUser(
     @Payload() data: BulkCreateUserRequestDTO,
     @Ctx() ctx: RmqContext,
   ) {
     const channel = ctx.getChannelRef();
     const originalMsg = ctx.getMessage();
-    this.usersService.bulkCreateUsers(data);
     channel.ack(originalMsg);
+    return this.usersService.bulkCreateUsers(data);
   }
 }

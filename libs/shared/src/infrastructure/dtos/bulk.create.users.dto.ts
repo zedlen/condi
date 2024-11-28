@@ -14,4 +14,7 @@ export class BulkCreateUserRequestDTO {
 
   //Not documented as is for internal use
   requestId?: string;
+
+  //Not documented as is for internal use
+  data?: Array<JSON>;
 }

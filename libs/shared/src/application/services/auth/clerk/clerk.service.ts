@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { InviteUserRequestDTO } from '@shared/infrastructure/dtos/invite.users.dto';
 import { AuthService } from '@shared/domain/interfaces/auth.service.interface';
 import { Request } from 'express';
+import { UserEntity } from '@shared/domain/entities/User.entity';
 @Injectable()
 export class ClerkService implements AuthService {
   private readonly logger = new Logger(ClerkService.name);
@@ -15,7 +16,10 @@ export class ClerkService implements AuthService {
     });
   }
 
-  async inviteUser(data: InviteUserRequestDTO): Promise<void> {
+  async inviteUser(
+    data: InviteUserRequestDTO,
+    user: UserEntity,
+  ): Promise<void> {
     try {
       await this.clerkClient.invitations.createInvitation({
         emailAddress: data.email,
@@ -25,6 +29,7 @@ export class ClerkService implements AuthService {
           resideceIds: data.residencesIds,
           name: data.name,
           lastName: data.lastName,
+          userId: user.id.toPrimitive(),
         },
         notify: true,
       });

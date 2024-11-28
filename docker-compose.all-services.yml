@@ -18,6 +18,7 @@ services:
     depends_on:
       - users
       - rabbitmq
+      - dynamodb-local
 
   users:
     build:
@@ -33,6 +34,7 @@ services:
       - ./.env.docker:/app/.env.docker
     depends_on:
       - rabbitmq
+      - dynamodb-local
 
   rabbitmq:
     image: "rabbitmq:management"

@@ -23,10 +23,14 @@ import { AuthGuard } from '@condi/application/interceptors/auth.interceptor';
 import { BulkCreateUserRequestDTO } from '@shared/infrastructure/dtos/bulk.create.users.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MB } from '@shared/infrastructure/constants/fileSize';
+import { UsersService } from '@condi/application/services/v1/users.services';
 @Controller({ version: ['1', VERSION_NEUTRAL], path: 'users' })
 export class UsersController {
   private readonly logger = new Logger(UsersController.name);
-  constructor(@Inject(CLIENTS.USERS) private userClient: ClientProxy) {}
+  constructor(
+    @Inject(CLIENTS.USERS) private userClient: ClientProxy,
+    private userService: UsersService,
+  ) {}
 
   @Post('invites')
   @ApiResponse({
@@ -121,10 +125,10 @@ export class UsersController {
     @Headers() headers: any,
   ) {
     const requestId = headers['request-id'];
-    this.userClient.emit(EVENTS.USER_CREATE_BULK, {
+    const response = this.userService.bulkCreateUsers({
       file: file.buffer,
       requestId,
     });
-    return {};
+    return response;
   }
 }

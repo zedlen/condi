@@ -6,6 +6,6 @@ export interface UserPrimitives {
   status: string;
   email: string;
   condominiumsIds: string[];
-  residenceId: string;
+  residencesId: string[];
   externalId: string;
 }

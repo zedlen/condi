@@ -1,7 +1,7 @@
 import { ValueObject } from '@shared/domain/interfaces/valueObject.interface';
 
 export class UserID implements ValueObject {
-  constructor(private value: string) {}
+  constructor(private value: string = '') {}
 
   validate() {}
 

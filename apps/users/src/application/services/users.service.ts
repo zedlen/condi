@@ -2,12 +2,10 @@ import { ClerkWebhookDto } from '@shared/infrastructure/dtos/clerk.webhook.dto';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InviteUserRequestDTO } from '@shared/infrastructure/dtos/invite.users.dto';
 import { AuthService } from '@shared/domain/interfaces/auth.service.interface';
-import { User } from '@users/domain/entities/user.entity';
 import { v4 } from 'uuid';
 import { PermissionService } from '@shared/domain/interfaces/permission.service.interface';
 import { BulkCreateUserRequestDTO } from '@shared/infrastructure/dtos/bulk.create.users.dto';
-import { isArrayBuffer } from 'util/types';
-import { ExcelService } from '@shared/domain/interfaces/file/file.excel.service.interface';
+import { UserRepository } from '@users/domain/interfaces/user.repository.interface';
 
 @Injectable()
 export class UsersService {
@@ -15,33 +13,32 @@ export class UsersService {
   constructor(
     private readonly authService: AuthService,
     private readonly permissionService: PermissionService,
-    private readonly excelService: ExcelService,
+    private readonly userRepository: UserRepository,
   ) {}
 
-  saveUser(clerkWebhookData: ClerkWebhookDto) {
+  async saveUser(clerkWebhookData: ClerkWebhookDto) {
     const { data } = clerkWebhookData;
-    const user = new User(
-      //id
-      v4(),
+    const user = await this.userRepository.createOrUpdate({
       //name
-      data['first_name'],
+      name: data['first_name'],
       //lastName
-      data['last_name'],
+      lastName: data['last_name'],
       //status
-      '',
+      status: 'CONFIRMED',
       //email
-      data['email_addresses']?.[0]?.['email_address'],
+      email: data['email_addresses']?.[0]?.['email_address'],
       //residenceId
-      data?.['public_metadata']?.['resideceIds'],
+      residencesId: data?.['public_metadata']?.['resideceIds'],
       //condominiumsIds
-      data?.['public_metadata']?.['condominiumsIds'],
+      condominiumsIds: data?.['public_metadata']?.['condominiumsIds'],
       //rolesIds
-      data?.['public_metadata']?.['roleIds'],
+      roles: data?.['public_metadata']?.['roleIds'],
       //externalId
-      data?.['id'],
-    );
-
-    this.permissionService.createUser(user);
+      externalId: data?.['id'],
+      //id
+      id: data?.['public_metadata']?.['userId'] || v4(),
+    });
+    await this.permissionService.createUser(user);
     this.logger.log('User to be saved on db', user);
   }
 
@@ -63,14 +60,65 @@ export class UsersService {
     );
     if (!rolesExists.every((exists) => exists))
       throw new BadRequestException('Some roles may not exists', 'not-a-role');
-    await this.authService.inviteUser(data);
+    const newUser = await this.userRepository.save({
+      //name
+      name: data.name,
+      //lastName
+      lastName: data.lastName,
+      //status
+      status: 'INVITED',
+      //email
+      email: data.email,
+      //residenceId
+      residencesId: data.residencesIds,
+      //condominiumsIds
+      condominiumsIds: data.condominiumsIds,
+      //rolesIds
+      roles: data.roleIds,
+      //externalId
+      externalId: '',
+      id: '',
+    });
+    await this.authService.inviteUser(data, newUser);
   }
 
-  async bulkCreateUsers(data: BulkCreateUserRequestDTO) {
-    const { file, requestId } = data;
-    const buffer = isArrayBuffer(file) ? file : file.buffer;
-    const fileData = await this.excelService.readFileBuffer(buffer);
+  async bulkCreateUsers(requestData: BulkCreateUserRequestDTO) {
+    const { data, requestId } = requestData;
 
-    console.log({ data: fileData.get('NuevosResidentes'), requestId });
+    const responses = await Promise.allSettled(
+      data.map(async (user) => {
+        //TODO: create contanst to map file columns could be usefull also when creating a new file.
+        const newOwner: InviteUserRequestDTO = {
+          name: user['Nombre Propietarion'],
+          lastName: user['Apellido Propietario'],
+          email: user['Correo Propietario'],
+          roleIds: ['owner'], //TODO: fix this to use a constant
+          condominiumsIds: [user['Condominio']], //this will be the external ID
+          residencesIds: [user['ID']], // this is the already created residence that will be assigned to the user; Maybe save relation on user save?
+          requestId,
+        };
+        const ownerResponse = await this.inviteUser(newOwner);
+        let coOwnerResponse;
+        if (user['Nombre Co propietario']) {
+          const newCoOwner: InviteUserRequestDTO = {
+            name: user['Nombre Co Propietarion'],
+            lastName: user['Apellido Co Propietario'],
+            email: user['Correo Co Propietario'],
+            roleIds: ['co_owner'], //TODO: fix this to use a constant
+            condominiumsIds: [user['Condominio']],
+            residencesIds: [user['ID']], // this is the already created residence that will be assigned to the user; Maybe save relation on user save?
+            requestId,
+          };
+          coOwnerResponse = await this.inviteUser(newCoOwner);
+          throw new Error();
+        }
+        return { ownerResponse, coOwnerResponse };
+      }),
+    );
+    return data.map((user, index) => ({
+      ...user,
+      status: responses[index].status,
+      response: responses[index]['reason'],
+    }));
   }
 }
