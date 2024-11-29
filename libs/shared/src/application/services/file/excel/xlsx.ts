@@ -1,32 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ExcelService } from '@shared/domain/interfaces/file/file.excel.service.interface';
 import { WorkBook } from 'xlsx';
-import fs from 'fs';
-import { Readable } from 'stream';
 
+import { read, readFile, utils } from 'xlsx';
 @Injectable()
 export class XlsxService implements ExcelService {
   private logger = new Logger(XlsxService.name);
-  private read;
-  private readFile;
-  private utils;
-  constructor() {
-    this.loadLibs();
-  }
-
-  async loadLibs() {
-    const { read, readFile, utils, set_fs, stream } = await import('xlsx');
-    this.read = read;
-    this.readFile = readFile;
-    this.utils = utils;
-    set_fs(fs);
-    stream.set_readable(Readable);
-  }
-
+  constructor() {}
   async readFileBuffer(fileStream: Buffer): Promise<Map<string, Array<JSON>>> {
     try {
-      console.log(this.read);
-      const workbook = this.read(fileStream);
+      const workbook = read(fileStream);
       return this.getWorkbookAsJSON(workbook);
     } catch (error) {
       this.logger.error(error);
@@ -36,7 +19,7 @@ export class XlsxService implements ExcelService {
 
   async readFileFromPath(path: string): Promise<Map<string, Array<JSON>>> {
     try {
-      const workbook = this.readFile(path);
+      const workbook = readFile(path);
       return this.getWorkbookAsJSON(workbook);
     } catch (error) {
       this.logger.error(error);
@@ -60,7 +43,7 @@ export class XlsxService implements ExcelService {
       sheets.forEach((sheetName) =>
         data.set(
           sheetName,
-          this.utils.sheet_to_json(workbook.Sheets[sheetName], {
+          utils.sheet_to_json(workbook.Sheets[sheetName], {
             range: workbook.Sheets[sheetName]['!ref'].includes('A1') ? 1 : 0,
           }),
         ),

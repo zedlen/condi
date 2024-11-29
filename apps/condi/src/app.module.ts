@@ -9,6 +9,7 @@ import { LoggerMiddleware } from '@condi/application/middlewares/logger.middlewa
 import { LoggerModule } from 'nestjs-pino';
 import { pinoLoggerConfig } from '@shared/infrastructure/constants/pinoLogger';
 import { SharedModule } from '@shared/shared.module';
+import { UsersService } from '@condi/application/services/v1/users.services';
 
 @Module({
   imports: [
@@ -33,7 +34,7 @@ import { SharedModule } from '@shared/shared.module';
     LoggerModule.forRoot(pinoLoggerConfig),
   ],
   controllers: [AppController, WebhooksController, UsersController],
-  providers: [],
+  providers: [UsersService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

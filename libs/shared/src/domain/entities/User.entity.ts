@@ -8,7 +8,7 @@ export abstract class UserEntity implements Entity {
   lastName: ValueObject;
   status: string; // to be defined how this will be worked.
   email: string;
-  residenceId: ValueObject;
+  residencesId: ValueObject[];
   condominiumsIds: ValueObject[];
   roles: ValueObject[];
   externalId: string;
