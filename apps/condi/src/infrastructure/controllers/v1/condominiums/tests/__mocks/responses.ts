@@ -1,0 +1,20 @@
+export const condominiumObjectResponse = {
+  id: 'condominium-id',
+  name: 'condominium-name',
+  status: 'condominium-status',
+  externalId: 'condominium-externalId',
+  type: 'condominium-type',
+  totalResidences: 1,
+  avialableParkingSpots: 1,
+  address: {
+    id: 'address-1',
+    name: 'address-name',
+    addressLine1: 'address-line1',
+    addressLine2: 'address-line-2',
+    zipcode: 'address-zipcode',
+    city: 'address-city',
+    state: 'address-state',
+    country: 'address-country',
+    status: 'address-status',
+  },
+};

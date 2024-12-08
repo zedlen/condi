@@ -1,7 +1,7 @@
 import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { ClerkClient, createClerkClient, getAuth, User } from '@clerk/express';
 import { ConfigService } from '@nestjs/config';
-import { InviteUserRequestDTO } from '@shared/infrastructure/dtos/invite.users.dto';
+import { InviteUserRequestDTO } from '@shared/infrastructure/dtos/users/invite.users.dto';
 import { AuthService } from '@shared/domain/interfaces/auth.service.interface';
 import { Request } from 'express';
 import { UserEntity } from '@shared/domain/entities/User.entity';

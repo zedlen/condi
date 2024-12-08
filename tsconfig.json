@@ -18,6 +18,9 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
+      "@condominiums/*": [
+        "./apps/condominiums/src/*"
+      ],
       "@users/*": [
         "./apps/users/src/*"
       ],

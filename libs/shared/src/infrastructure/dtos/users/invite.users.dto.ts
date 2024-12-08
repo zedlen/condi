@@ -40,4 +40,5 @@ export class InviteUserRequestDTO {
 
   //Not documented as is for internal use
   requestId?: string;
+  userId?: string;
 }

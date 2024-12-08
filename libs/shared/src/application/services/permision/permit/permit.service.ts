@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { PermissionService } from '@shared/domain/interfaces/permission.service.interface';
 import { UserEntity } from '@shared/domain/entities/User.entity';
 import { Permit } from 'permitio';
-
+import slugify from 'slugify';
 @Injectable()
 export class PermitService implements PermissionService {
   private permit: Permit;
@@ -65,6 +65,7 @@ export class PermitService implements PermissionService {
       const tenant = await this.permit.api.getTenant(tenantId);
       return !!tenant;
     } catch (error) {
+      this.logger.error(error);
       return false;
     }
   }
@@ -73,7 +74,28 @@ export class PermitService implements PermissionService {
       const role = await this.permit.api.getRole(roleId);
       return !!role;
     } catch (error) {
+      this.logger.error(error);
       return false;
+    }
+  }
+
+  async createCondominium(
+    name: string,
+  ): Promise<{ isCreated: boolean; externalId: string; error?: Error }> {
+    let isCreated = false,
+      error: Error;
+    const externalId = slugify(name);
+    try {
+      /*await this.permit.api.createTenant({
+        key: externalId,
+        name: name,
+        description: `Tenant for condominium ${externalId}`,
+      });*/
+      isCreated = true;
+    } catch (err) {
+      error = err;
+    } finally {
+      return { isCreated, externalId, error };
     }
   }
 }

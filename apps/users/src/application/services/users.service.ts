@@ -1,10 +1,10 @@
-import { ClerkWebhookDto } from '@shared/infrastructure/dtos/clerk.webhook.dto';
+import { ClerkWebhookDto } from '@shared/infrastructure/dtos/webhooks/clerk.webhook.dto';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { InviteUserRequestDTO } from '@shared/infrastructure/dtos/invite.users.dto';
+import { InviteUserRequestDTO } from '@shared/infrastructure/dtos/users/invite.users.dto';
 import { AuthService } from '@shared/domain/interfaces/auth.service.interface';
 import { v4 } from 'uuid';
 import { PermissionService } from '@shared/domain/interfaces/permission.service.interface';
-import { BulkCreateUserRequestDTO } from '@shared/infrastructure/dtos/bulk.create.users.dto';
+import { BulkCreateUserRequestDTO } from '@shared/infrastructure/dtos/users/bulk.create.users.dto';
 import { UserRepository } from '@users/domain/interfaces/user.repository.interface';
 
 @Injectable()

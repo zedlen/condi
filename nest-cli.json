@@ -36,6 +36,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/shared/tsconfig.app.json"
       }
+    },
+    "condominiums": {
+      "type": "application",
+      "root": "apps/condominiums",
+      "entryFile": "main",
+      "sourceRoot": "apps/condominiums/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/condominiums/tsconfig.app.json"
+      }
     }
   }
 }

@@ -6,9 +6,9 @@ import { AuthService } from '@shared/domain/interfaces/auth.service.interface';
 import { PermissionService } from '@shared/domain/interfaces/permission.service.interface';
 import { PermitService } from '@shared/application/services/permision/permit/permit.service';
 import { ExcelService } from '@shared/domain/interfaces/file/file.excel.service.interface';
-import { XlsxService } from '@shared/application/services/file/excel/xlsx';
+//import { XlsxService } from '@shared/application/services/file/excel/xlsx';
 import { MongooseModule } from '@nestjs/mongoose';
-//import { ExcelJSService } from '@shared/application/services/file/excel/exceljs';
+import { ExcelJSService } from '@shared/application/services/file/excel/exceljs';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -35,7 +35,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     },
     {
       provide: ExcelService,
-      useClass: XlsxService,
+      useClass: ExcelJSService,
     },
   ],
   exports: [AuthService, PermissionService, ExcelService],

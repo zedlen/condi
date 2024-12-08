@@ -10,6 +10,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { pinoLoggerConfig } from '@shared/infrastructure/constants/pinoLogger';
 import { SharedModule } from '@shared/shared.module';
 import { UsersService } from '@condi/application/services/v1/users.services';
+import { CondominiumsController } from '@condi/infrastructure/controllers/v1/condominiums/condominiums.controller';
 
 @Module({
   imports: [
@@ -30,10 +31,26 @@ import { UsersService } from '@condi/application/services/v1/users.services';
           },
         },
       },
+      {
+        name: CLIENTS.CONDOMINIUMS,
+        transport: Transport.RMQ,
+        options: {
+          urls: process.env.RABBITMQ_URLS.split(','),
+          queue: process.env.CONDOMINIUMS_RABBITMQ_QUEUE,
+          queueOptions: {
+            durable: false,
+          },
+        },
+      },
     ]),
     LoggerModule.forRoot(pinoLoggerConfig),
   ],
-  controllers: [AppController, WebhooksController, UsersController],
+  controllers: [
+    AppController,
+    WebhooksController,
+    UsersController,
+    CondominiumsController,
+  ],
   providers: [UsersService],
 })
 export class AppModule {

@@ -7,9 +7,9 @@ import {
   MessagePattern,
 } from '@nestjs/microservices';
 import { EVENTS } from '@shared/infrastructure/constants/rabbitmq';
-import { BulkCreateUserRequestDTO } from '@shared/infrastructure/dtos/bulk.create.users.dto';
-import { ClerkWebhookDto } from '@shared/infrastructure/dtos/clerk.webhook.dto';
-import { InviteUserRequestDTO } from '@shared/infrastructure/dtos/invite.users.dto';
+import { BulkCreateUserRequestDTO } from '@shared/infrastructure/dtos/users/bulk.create.users.dto';
+import { ClerkWebhookDto } from '@shared/infrastructure/dtos/webhooks/clerk.webhook.dto';
+import { InviteUserRequestDTO } from '@shared/infrastructure/dtos/users/invite.users.dto';
 import { UsersService } from '@users/application/services/users.service';
 
 @Controller()

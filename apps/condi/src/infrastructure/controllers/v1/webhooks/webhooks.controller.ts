@@ -1,4 +1,4 @@
-import { ClerkWebhookDto } from '@shared/infrastructure/dtos/clerk.webhook.dto';
+import { ClerkWebhookDto } from '@shared/infrastructure/dtos/webhooks/clerk.webhook.dto';
 import {
   Controller,
   Post,

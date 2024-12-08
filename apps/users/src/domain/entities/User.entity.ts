@@ -6,17 +6,20 @@ import { UserResidenceID } from '@users/domain/value-objects/user/user.residence
 import { UserRole } from '@users/domain/value-objects/user/user.role.valueObject';
 import { UserCondominiumID } from '@users/domain/value-objects/user/user.condominiumId.valueObject';
 import { UserEntity } from '@shared/domain/entities/User.entity';
+import { UserExternalID } from '@users/domain/value-objects/user/user.externalId.valueObject';
+import { UserStatus } from '@users/domain/value-objects/user/user.status.valueObject';
+import { UserEmail } from '@users/domain/value-objects/user/user.email.valueObject';
 
 export class User implements UserEntity {
   id: UserID;
   name: UserName;
   lastName: UserLastName;
-  status: string; //TODO: create VO
-  email: string; //TODO: create VO
+  status: UserStatus;
+  email: UserEmail;
   residencesId: UserResidenceID[];
   condominiumsIds: UserCondominiumID[];
   roles: UserRole[];
-  externalId: string;
+  externalId: UserExternalID;
 
   constructor(
     name: string,
@@ -24,7 +27,7 @@ export class User implements UserEntity {
     status: string,
     email: string,
     residenceId: string[],
-    condominiumsId: string[],
+    condominiumsIds: string[],
     roles: string[],
     externalId: string,
     id?: string,
@@ -32,16 +35,16 @@ export class User implements UserEntity {
     this.id = new UserID(id);
     this.name = new UserName(name);
     this.lastName = new UserLastName(lastName);
-    this.status = status;
-    this.email = email;
+    this.status = new UserStatus(status);
+    this.email = new UserEmail(email);
     this.residencesId = residenceId.map(
       (residenceId) => new UserResidenceID(residenceId),
     );
-    this.condominiumsIds = condominiumsId.map(
+    this.condominiumsIds = condominiumsIds.map(
       (condominiumId) => new UserCondominiumID(condominiumId),
     );
     this.roles = roles.map((role) => new UserRole(role));
-    this.externalId = externalId;
+    this.externalId = new UserExternalID(externalId);
   }
 
   toPrimitives(): UserPrimitives {
@@ -49,8 +52,8 @@ export class User implements UserEntity {
       id: this.id.toPrimitive(),
       name: this.name.toPrimitive(),
       lastName: this.lastName.toPrimitive(),
-      status: this.status,
-      email: this.email,
+      status: this.status.toPrimitive(),
+      email: this.email.toPrimitive(),
       residencesId: this.residencesId.map((residenceId) =>
         residenceId.toPrimitive(),
       ),
@@ -58,7 +61,7 @@ export class User implements UserEntity {
         condominiumId.toPrimitive(),
       ),
       roles: this.roles.map((role) => role.toPrimitive()),
-      externalId: this.externalId,
+      externalId: this.externalId.toPrimitive(),
     };
   }
 }

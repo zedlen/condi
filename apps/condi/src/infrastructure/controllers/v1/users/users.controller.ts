@@ -18,9 +18,9 @@ import {
 import { CLIENTS, EVENTS } from '@shared/infrastructure/constants/rabbitmq';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiResponse, ApiBody } from '@nestjs/swagger';
-import { InviteUserRequestDTO } from '@shared/infrastructure/dtos/invite.users.dto';
+import { InviteUserRequestDTO } from '@shared/infrastructure/dtos/users/invite.users.dto';
 import { AuthGuard } from '@condi/application/interceptors/auth.interceptor';
-import { BulkCreateUserRequestDTO } from '@shared/infrastructure/dtos/bulk.create.users.dto';
+import { BulkCreateUserRequestDTO } from '@shared/infrastructure/dtos/users/bulk.create.users.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MB } from '@shared/infrastructure/constants/fileSize';
 import { UsersService } from '@condi/application/services/v1/users.services';

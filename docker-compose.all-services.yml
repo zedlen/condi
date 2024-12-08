@@ -18,7 +18,7 @@ services:
     depends_on:
       - users
       - rabbitmq
-      - dynamodb-local
+      - condominiums
 
   users:
     build:
@@ -34,7 +34,21 @@ services:
       - ./.env.docker:/app/.env.docker
     depends_on:
       - rabbitmq
-      - dynamodb-local
+  
+  condominiums:
+    build:
+      args:
+        - APP_NAME=condominiums
+      dockerfile: Dockerfile
+    command: npm run start:dev:condominiums
+    env_file:
+      - .env.docker
+    volumes:
+      - ./apps/condominiums:/app/apps/condominiums
+      - ./libs:/app/libs
+      - ./.env.docker:/app/.env.docker
+    depends_on:
+      - rabbitmq
 
   rabbitmq:
     image: "rabbitmq:management"
